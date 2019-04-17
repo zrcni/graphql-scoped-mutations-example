@@ -31,22 +31,22 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     users: () => users,
-    user: (root, variables) => users.find(user => user.id === variables.id)
+    user: (root, { id }) => users.find(user => user.id === id)
   },
   Mutation: {
-    user: (root, variables) => {
-      if (!variables.id) {
+    user: (root, { id }) => {
+      if (!id) {
         throw new Error("id variable missing in mutation.user");
       }
-      return variables.id;
+      return id;
     }
   },
   UserMutation: {
-    updateName: (id, variables) => {
+    updateName: (id, { name }) => {
       let updatedUser;
       users = users.map(user => {
         if (user.id === id) {
-          user.name = variables.name;
+          user.name = name;
           updatedUser = user;
         }
         return user;
@@ -56,11 +56,11 @@ const resolvers = {
       }
       return updatedUser;
     },
-    updateDescription: (id, variables) => {
+    updateDescription: (id, { description }) => {
       let updatedUser;
       users = users.map(user => {
         if (user.id === id) {
-          user.description = variables.description;
+          user.description = description;
           updatedUser = user;
         }
         return user;
