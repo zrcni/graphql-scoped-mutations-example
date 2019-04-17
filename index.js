@@ -1,15 +1,16 @@
 const { ApolloServer, gql } = require("apollo-server");
 
 let users = [
-  { id: "1", name: "User1" },
-  { id: "2", name: "User2" },
-  { id: "3", name: "User3" }
+  { id: "1", name: "User1", description: "" },
+  { id: "2", name: "User2", description: "" },
+  { id: "3", name: "User3", description: "" }
 ];
 
 const typeDefs = gql`
   type User {
     id: ID!
     name: String
+    description: String
   }
 
   type Query {
@@ -19,6 +20,7 @@ const typeDefs = gql`
 
   type UserMutation {
     updateName(name: String!): User
+    updateDescription(description: String!): User
   }
 
   type Mutation {
@@ -45,6 +47,20 @@ const resolvers = {
       users = users.map(user => {
         if (user.id === id) {
           user.name = variables.name;
+          updatedUser = user;
+        }
+        return user;
+      });
+      if (!updatedUser) {
+        throw new Error(`could not find user by id ${id}`);
+      }
+      return updatedUser;
+    },
+    updateDescription: (id, variables) => {
+      let updatedUser;
+      users = users.map(user => {
+        if (user.id === id) {
+          user.description = variables.description;
           updatedUser = user;
         }
         return user;
